@@ -3,7 +3,7 @@ import { Text, View } from "react-native";
 const Home = () => {
   return (
     <View>
-      <Text>Home</Text>
+      <Text className="font-sans-bold text-8xl">Home</Text>
     </View>
   );
 };
