@@ -30,7 +30,9 @@ const SubscriptionCard = ({ item }: { item: Subscription }) => {
                 item?.plan ||
                 formatSubscriptionDateTime(item?.renewalDate ?? "")}
             </Text>
-            <Text>{dayjs(item.startDate).format("MMMM D, h:mm")}</Text>
+            <Text>
+              {dayjs(item?.startDate).format("MMMM D, h:mm") || "Not available"}
+            </Text>
           </View>
           <View className="sub-price-box">
             <Text className="sub-price">
@@ -61,7 +63,8 @@ const SubscriptionCard = ({ item }: { item: Subscription }) => {
               <View className="sub-row-copy">
                 <Text className="sub-label">Started:</Text>
                 <Text className="sub-value">
-                  {dayjs(item?.startDate).format("MMMM D, h:mm")}
+                  {dayjs(item?.startDate).format("MMMM D, h:mm") ||
+                    "Not available"}
                 </Text>
               </View>
             </View>
