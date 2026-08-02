@@ -1,8 +1,10 @@
 import "@/global.css";
+import { posthog } from "@/lib/posthog";
 import { ClerkProvider } from "@clerk/expo";
 import { tokenCache } from "@clerk/expo/token-cache";
 import { useFonts } from "expo-font";
 import { SplashScreen, Stack } from "expo-router";
+import { PostHogErrorBoundary, PostHogProvider } from "posthog-react-native";
 import { useEffect } from "react";
 import { View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -24,13 +26,24 @@ export default function RootLayout() {
   }, [fontsLoaded, fontError]);
   if (!fontsLoaded) return null;
   const publishableKey = process.env.EXPO_PUBLIC_CLERK_PUBLISHABLE_KEY!;
+  const app = (
+    <View className="bg-background flex-1">
+      <SafeAreaView style={{ flex: 1 }}>
+        <Stack screenOptions={{ headerShown: false }} />
+      </SafeAreaView>
+    </View>
+  );
+  console.log({ posthog });
+
   return (
     <ClerkProvider publishableKey={publishableKey} tokenCache={tokenCache}>
-      <View className="bg-background flex-1">
-        <SafeAreaView style={{ flex: 1 }}>
-          <Stack screenOptions={{ headerShown: false }} />
-        </SafeAreaView>
-      </View>
+      {posthog ? (
+        <PostHogProvider client={posthog}>
+          <PostHogErrorBoundary>{app}</PostHogErrorBoundary>
+        </PostHogProvider>
+      ) : (
+        app
+      )}
     </ClerkProvider>
   );
 }
