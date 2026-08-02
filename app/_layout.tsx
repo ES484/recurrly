@@ -1,4 +1,6 @@
 import "@/global.css";
+import { ClerkProvider } from "@clerk/expo";
+import { tokenCache } from "@clerk/expo/token-cache";
 import { useFonts } from "expo-font";
 import { SplashScreen, Stack } from "expo-router";
 import { useEffect } from "react";
@@ -21,11 +23,14 @@ export default function RootLayout() {
     }
   }, [fontsLoaded, fontError]);
   if (!fontsLoaded) return null;
+  const publishableKey = process.env.EXPO_PUBLIC_CLERK_PUBLISHABLE_KEY!;
   return (
-    <View className="bg-background flex-1">
-      <SafeAreaView style={{ flex: 1 }}>
-        <Stack screenOptions={{ headerShown: false }} />
-      </SafeAreaView>
-    </View>
+    <ClerkProvider publishableKey={publishableKey} tokenCache={tokenCache}>
+      <View className="bg-background flex-1">
+        <SafeAreaView style={{ flex: 1 }}>
+          <Stack screenOptions={{ headerShown: false }} />
+        </SafeAreaView>
+      </View>
+    </ClerkProvider>
   );
 }
