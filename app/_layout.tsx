@@ -1,3 +1,4 @@
+import ErrorFallback from "@/components/home/common/ErrorFallback";
 import "@/global.css";
 import { posthog } from "@/lib/posthog";
 import { ClerkProvider } from "@clerk/expo";
@@ -33,17 +34,13 @@ export default function RootLayout() {
       </SafeAreaView>
     </View>
   );
-  console.log({ posthog });
-
   return (
     <ClerkProvider publishableKey={publishableKey} tokenCache={tokenCache}>
-      {posthog ? (
-        <PostHogProvider client={posthog}>
-          <PostHogErrorBoundary>{app}</PostHogErrorBoundary>
-        </PostHogProvider>
-      ) : (
-        app
-      )}
+      <PostHogProvider client={posthog}>
+        <PostHogErrorBoundary fallback={<ErrorFallback />}>
+          {app}
+        </PostHogErrorBoundary>
+      </PostHogProvider>
     </ClerkProvider>
   );
 }

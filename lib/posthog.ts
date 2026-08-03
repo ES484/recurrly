@@ -14,16 +14,23 @@ if (__DEV__ && !host) {
     "EXPO_PUBLIC_POSTHOG_HOST variable required by PostHog is missing or un-configured, this causes events to be silently missed. This error stops appearing once EXPO_PUBLIC_POSTHOG_HOST is configured",
   );
 }
-
+const noopPosthog = {
+  capture: () => {},
+  identify: () => {},
+  reset: () => {},
+  screen: () => {},
+  alias: () => {},
+  group: () => {},
+} as unknown as PostHog;
 export const posthog =
   projectToken && host
     ? new PostHog(projectToken, {
         host,
         errorTracking: {
-        autocapture: {
-          uncaughtExceptions: true,
-          unhandledRejections: true,
-        },
+          autocapture: {
+            uncaughtExceptions: true,
+            unhandledRejections: true,
+          },
         },
       })
-    : null;
+    : noopPosthog;
