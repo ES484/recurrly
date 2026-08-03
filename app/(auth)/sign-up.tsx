@@ -49,7 +49,7 @@ const SignUp = () => {
     if (error) {
       console.error(JSON.stringify(error, null, 2));
       posthog.capture("user_sign_up_failed", {
-        error_message: error.message,
+        sign_up_method: "password",
       });
       return;
     }
@@ -73,11 +73,13 @@ const SignUp = () => {
             return;
           }
 
-          posthog.identify(emailAddress, {
-            $set: { email: emailAddress },
-            $set_once: { sign_up_date: new Date().toISOString() },
-          });
-          posthog.capture("user_signed_up", { email: emailAddress });
+          if (session?.user?.id) {
+            posthog.identify(session.user.id, {
+              $set: { email: emailAddress },
+              $set_once: { sign_up_date: new Date().toISOString() },
+            });
+          }
+          posthog.capture("user_signed_up");
 
           const url = decorateUrl("/(tabs)");
           if (url.startsWith("http")) {

@@ -7,14 +7,14 @@ import SubscriptionCard from "../common/SubscriptionCard";
 import Upcoming from "../upcoming";
 import UserProfile from "../user/profile";
 
-const SubscriptionList = () => {
+const SubscriptionList = ({ onAdd }: { onAdd: () => void }) => {
   const router = useRouter();
   const handlePress = () => router.push("/(tabs)/subscriptions");
   return (
     <FlatList
       ListHeaderComponent={() => (
         <>
-          <UserProfile />
+          <UserProfile onAdd={onAdd} />
           <Balance />
           <Upcoming />
           <ListHeading

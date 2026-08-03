@@ -1,22 +1,35 @@
 import {
-    formatCurrency,
-    formatStatusLabel,
-    formatSubscriptionDateTime,
+  formatCurrency,
+  formatStatusLabel,
+  formatSubscriptionDateTime,
 } from "@/lib/utils";
 import clsx from "clsx";
 import dayjs from "dayjs";
+import { usePostHog } from "posthog-react-native";
 import { useState } from "react";
 import { Image, Pressable, Text, View } from "react-native";
 
 const SubscriptionCard = ({ item }: { item: Subscription }) => {
   const [expanded, setExpanded] = useState(false);
+  const posthog = usePostHog();
+
+  const handlePress = () => {
+    const willExpand = !expanded;
+    setExpanded(willExpand);
+    posthog.capture("subscription_details_toggled", {
+      subscription_id: item.id,
+      subscription_category: item.category || item.plan || null,
+      expanded: willExpand,
+    });
+  };
+
   return (
     <Pressable
       className={clsx("sub-card bg-card", expanded && "sub-card-expanded")}
       style={{
         backgroundColor: !expanded ? item.color : undefined,
       }}
-      onPress={() => setExpanded(!expanded)}
+      onPress={handlePress}
     >
       <View className="sub-head">
         <View className="sub-main">
